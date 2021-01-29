@@ -6,7 +6,7 @@ const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
 const crypto = require('crypto');
 
-const signToken = (id) => {
+const signToken = id => {
   console.log('token');
   return jwt.sign({ id: id, iat: Date.now() }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
@@ -15,10 +15,8 @@ const signToken = (id) => {
 
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
-    name: req.body.name,
     email: req.body.email,
     password: req.body.password,
-    confirmPassword: req.body.confirmPassword,
   });
   const token = signToken(newUser._id);
   newUser.password = undefined;
@@ -170,7 +168,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   await user.save();
   // 3) log user in, send jwt
   user.password = undefined;
-  
+
   const token = signToken(user._id);
   res.status(200).json({
     status: 'success',
