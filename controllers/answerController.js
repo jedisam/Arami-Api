@@ -5,7 +5,8 @@ exports.createAnswer = async (req, res, next) => {
     const { count, answer1, answer2, answer3 } = req.body;
     const answers = { answer1, answer2, answer3 };
     // const answer = await answerModel.findById();
-    await answerModel.create({ count, answers });
+    const resp = await answerModel.create({ count, answers });
+    res.status(201).json(resp);
   } catch (err) {
     console.error(err);
     next(err);
