@@ -9,6 +9,7 @@ const cors = require('cors');
 
 const AppError = require('./utils/appError');
 const userRouter = require('./routes/userRoute');
+const answerRouter = require('./routes/answerRoute');
 const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
@@ -50,6 +51,7 @@ app.get('/', (req, res) => {
   });
 });
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/answers', answerRouter);
 
 // unhandled routes
 app.all('*', (req, res, next) => {
