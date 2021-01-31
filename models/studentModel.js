@@ -26,6 +26,10 @@ const studentSchema = new mongoose.Schema({
   answer3: {
     type: String,
   },
+  result: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const Student = mongoose.model('student', studentSchema);

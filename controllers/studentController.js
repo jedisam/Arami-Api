@@ -1,16 +1,18 @@
 'use strict';
+const request = require('request');
+
 const studentModel = require('../models/studentModel');
 const answerModel = require('../models/answersModel');
 
-const request = require('request');
-
-exports.getStudAnswer = async (req, res, next) => {
+exports.createStudentAnswer = async (req, res, next) => {
+  let result = 0;
   let examName = req.body.examName;
+  let image = req.body.image;
   examName = examName.trim();
   const key = '0b1053d6c8054ffebff7b7b236a96db7';
   const key2 = 'd9aae959be994753be5b457ab9e79d2f';
   const endPoint = 'https://westus2.api.cognitive.microsoft.com/';
-  let jsonResponse;
+  let jsonResponse, name;
   let subscriptionKey = key;
   let endpoint = endPoint;
   if (!subscriptionKey) {
@@ -35,7 +37,7 @@ exports.getStudAnswer = async (req, res, next) => {
   const options = {
     uri: uriBase,
     qs: params,
-    body: '{"url": ' + '"' + img + '"}',
+    body: '{"url": ' + '"' + image + '"}',
     headers: {
       'Content-Type': 'application/json',
       'Ocp-Apim-Subscription-Key': subscriptionKey,
@@ -52,7 +54,7 @@ exports.getStudAnswer = async (req, res, next) => {
     // console.log(jsonResponse.regions);
 
     let nameLine = jsonResponse.regions[1].lines;
-    let name;
+
     let name1 = [];
     for (let i = 0; i < nameLine.length; i++) {
       var yStart = nameLine[i]['boundingBox'].split(',')[1]; // the Y_start of each line
@@ -100,31 +102,12 @@ exports.getStudAnswer = async (req, res, next) => {
     }
     answer3 = questionThree.join(' ');
     let allAnswers = { answer1, answer2, answer3 };
-    // const resp = await studentModel.create({examName, answer1, answer2, answer3})
     console.log('Exam Name:  ', examName);
     const answers = await answerModel.find({ examName });
     let newAnswer = answers[0];
-    console.log(newAnswer);
-    // const count = 3;
-    // while(count >=0 ) {
-
-    // }
     let count = 1;
-    console.log('COUNT: ', newAnswer.count);
     while (count <= newAnswer.count) {
-      console.log('ANSWER1: ', answer1);
-      console.log('NEW ANSWER: ', newAnswer.answer1);
-      let blanswer = `answer${count}`;
       let an = `answer${count}`;
-      console.log(an);
-      // let an2 = `newAnswer`
-      console.log(
-        'URL: ',
-        `https://api.labs.cognitive.microsoft.com/academic/v1.0/similarity?subscription-key=${key2}&s1=${
-          newAnswer[`${an}`]
-        }&s2=${allAnswers[`answer${count}`]}`
-      );
-
       request.get(
         `https://api.labs.cognitive.microsoft.com/academic/v1.0/similarity?subscription-key=${key2}&s1=${
           newAnswer[`${an}`]
@@ -134,13 +117,33 @@ exports.getStudAnswer = async (req, res, next) => {
             console.error(err);
             throw err;
           }
-          console.log('Yeahhhhhhhhhh');
-          console.log(JSON.parse(body));
+          let responeResult = JSON.parse(body);
+          if (responeResult >= 0.75) ++result;
         }
       );
       ++count;
     }
-
-    res.status(200).json({ answer1, answer2, answer3 });
+    const resp = await studentModel.create({
+      name,
+      examName,
+      image,
+      count: newAnswer.count,
+      answer1,
+      answer2,
+      answer3,
+      result,
+    });
+    res.status(201).json({ resp });
   });
+};
+
+exports.getAllStudentReport = async (req, res, next) => {
+  const resp = await studentModel.find({}).select('name result');
+  res.status(200).json({ resp });
+};
+
+exports.getStudentReport = async (req, res, next) => {
+  const id = req.params.id;
+  const resp = await studentModel.findById(id);
+  res.status(200).json({ resp });
 };

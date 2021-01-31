@@ -1,8 +1,12 @@
 const express = require('express');
-const { getStudAnswer } = require('../controllers/studentController');
+const {
+  createStudentAnswer,
+  getAllStudentReport,
+  getStudentReport,
+} = require('../controllers/studentController');
 
 const router = express.Router();
 
-router.post('/studentAnswer', getStudAnswer);
-
+router.route('/students').post(createStudentAnswer).get(getAllStudentReport);
+router.route('/students/:id').get(getStudentReport);
 module.exports = router;
