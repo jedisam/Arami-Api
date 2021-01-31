@@ -5,6 +5,10 @@ const studentSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Name of the student is required!'],
   },
+  examName: {
+    type: String,
+    required: [true, 'Exam name is required!'],
+  },
   image: {
     type: String,
     required: [true, 'Image Url is required!'],
@@ -13,7 +17,13 @@ const studentSchema = new mongoose.Schema({
     type: Number,
     required: [true, 'Number of questions is required!'],
   },
-  answer: {
+  answer1: {
+    type: String,
+  },
+  answer2: {
+    type: String,
+  },
+  answer3: {
     type: String,
   },
 });

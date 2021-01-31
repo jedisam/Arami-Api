@@ -5,6 +5,7 @@ exports.createAnswer = async (req, res, next) => {
     const { count, answer, examName } = req.body;
     let counter = 1;
     let user = req.user;
+    examName = examName.trim();
     let toBeSaved = { count, user, examName };
     while (counter <= count) {
       let chk = `answer${counter}`;
