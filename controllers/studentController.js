@@ -99,7 +99,7 @@ exports.getStudAnswer = async (req, res, next) => {
       }
     }
     answer3 = questionThree.join(' ');
-
+    let allAnswers = { answer1, answer2, answer3 };
     // const resp = await studentModel.create({examName, answer1, answer2, answer3})
     console.log('Exam Name:  ', examName);
     const answers = await answerModel.find({ examName });
@@ -109,16 +109,37 @@ exports.getStudAnswer = async (req, res, next) => {
     // while(count >=0 ) {
 
     // }
+    let count = 1;
+    console.log('COUNT: ', newAnswer.count);
+    while (count <= newAnswer.count) {
+      console.log('ANSWER1: ', answer1);
+      console.log('NEW ANSWER: ', newAnswer.answer1);
+      let blanswer = `answer${count}`;
+      let an = `answer${count}`;
+      console.log(an);
+      // let an2 = `newAnswer`
+      console.log(
+        'URL: ',
+        `https://api.labs.cognitive.microsoft.com/academic/v1.0/similarity?subscription-key=${key2}&s1=${
+          newAnswer[`${an}`]
+        }&s2=${allAnswers[`answer${count}`]}`
+      );
 
-    request.get(
-      `https://api.labs.cognitive.microsoft.com/academic/v1.0/similarity?subscription-key=${key2}&s1=${newAnswer.answer1}&s2=${answer1}`,
-      (err, resp, body) => {
-        if (err) {
-          throw err;
+      request.get(
+        `https://api.labs.cognitive.microsoft.com/academic/v1.0/similarity?subscription-key=${key2}&s1=${
+          newAnswer[`${an}`]
+        }&s2=${allAnswers[`answer${count}`]}`,
+        (err, resp, body) => {
+          if (err) {
+            console.error(err);
+            throw err;
+          }
+          console.log('Yeahhhhhhhhhh');
+          console.log(JSON.parse(body));
         }
-        console.log(JSON.parse(body));
-      }
-    );
+      );
+      ++count;
+    }
 
     res.status(200).json({ answer1, answer2, answer3 });
   });

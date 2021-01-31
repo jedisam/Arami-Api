@@ -2,7 +2,7 @@ const answerModel = require('../models/answersModel');
 
 exports.createAnswer = async (req, res, next) => {
   try {
-    const { count, answer, examName } = req.body;
+    let { count, answer, examName } = req.body;
     let counter = 1;
     let user = req.user;
     examName = examName.trim();
