@@ -27,7 +27,6 @@ exports.createStudentAnswer = async (req, res, next) => {
   const imageUrl =
     'https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/' +
     'Atomist_quote_from_Democritus.png/338px-Atomist_quote_from_Democritus.png';
-  let box1 = [];
   // Request parameters.
   const params = {
     language: 'unk',
@@ -133,7 +132,7 @@ exports.createStudentAnswer = async (req, res, next) => {
       answer3,
       result,
     });
-    res.status(201).json({ resp });
+    res.status(201).json({ message: 'Yeah' });
   });
 };
 
