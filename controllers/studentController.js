@@ -1,4 +1,4 @@
-'use strict';
+// 'use strict';
 const request = require('request');
 
 const studentModel = require('../models/studentModel');
@@ -112,28 +112,33 @@ exports.createStudentAnswer = async (req, res, next) => {
         `https://api.labs.cognitive.microsoft.com/academic/v1.0/similarity?subscription-key=${key2}&s1=${
           newAnswer[`${an}`]
         }&s2=${allAnswers[`answer${count}`]}`,
-        (err, resp, body) => {
+        async (err, resp, body) => {
           if (err) {
             console.error(err);
             throw err;
           }
           let responeResult = JSON.parse(body);
-          if (responeResult >= 0.75) ++result;
+          console.log(responeResult);
+          if (responeResult >= 0.7) ++result;
+          console.log(result);
+          if (count == newAnswer.count) {
+            const resp = await studentModel.create({
+              name,
+              examName,
+              image,
+              count: newAnswer.count,
+              answer1,
+              answer2,
+              answer3,
+              result: result,
+            });
+            res.status(201).json(resp);
+          }
         }
       );
+      console.log('Sec Res: ', result);
       ++count;
     }
-    const resp = await studentModel.create({
-      name,
-      examName,
-      image,
-      count: newAnswer.count,
-      answer1,
-      answer2,
-      answer3,
-      result,
-    });
-    res.status(201).json({ message: 'Yeah' });
   });
 };
 
