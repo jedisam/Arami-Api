@@ -5,6 +5,7 @@ const studentModel = require('../models/studentModel');
 const answerModel = require('../models/answersModel');
 
 exports.createStudentAnswer = async (req, res, next) => {
+  console.log('GOTTT hEREEEE: ', req.body);
   let result = 0;
   let examName = req.body.examName;
   let image = req.body.image;
