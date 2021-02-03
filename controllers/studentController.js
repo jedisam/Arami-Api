@@ -1,5 +1,6 @@
 // 'use strict';
 const request = require('request');
+const axios = require('axios');
 
 const studentModel = require('../models/studentModel');
 const answerModel = require('../models/answersModel');
@@ -7,6 +8,7 @@ const answerModel = require('../models/answersModel');
 exports.createStudentAnswer = async (req, res, next) => {
   console.log('GOTTT hEREEEE: ', req.body);
   let result = 0;
+  let score;
   let examName = req.body.examName;
   let image = req.body.image;
   examName = examName.trim();
@@ -100,6 +102,7 @@ exports.createStudentAnswer = async (req, res, next) => {
         }
       }
     }
+
     answer3 = questionThree.join(' ');
     let allAnswers = { answer1, answer2, answer3 };
     console.log('Exam Name:  ', examName);
@@ -107,38 +110,29 @@ exports.createStudentAnswer = async (req, res, next) => {
     let newAnswer = answers[0];
     let count = 1;
     while (count <= newAnswer.count) {
+      console.log('GOT hEre loop');
       let an = `answer${count}`;
-      request.get(
+      const resp = await axios.get(
         `https://api.labs.cognitive.microsoft.com/academic/v1.0/similarity?subscription-key=${key2}&s1=${
           newAnswer[`${an}`]
-        }&s2=${allAnswers[`answer${count}`]}`,
-        async (err, resp, body) => {
-          if (err) {
-            console.error(err);
-            throw err;
-          }
-          let responeResult = JSON.parse(body);
-          console.log(responeResult);
-          if (responeResult >= 0.7) ++result;
-          console.log(result);
-          if (count == newAnswer.count) {
-            const resp = await studentModel.create({
-              name,
-              examName,
-              image,
-              count: newAnswer.count,
-              answer1,
-              answer2,
-              answer3,
-              result: result,
-            });
-            res.status(201).json(resp);
-          }
-        }
+        }&s2=${allAnswers[`answer${count}`]}`
       );
-      console.log('Sec Res: ', result);
+      console.log(resp.data);
+      score = resp.data;
+      if (score >= 0.7) ++result;
       ++count;
     }
+    const resp = await studentModel.create({
+      name,
+      examName,
+      image,
+      count: newAnswer.count,
+      answer1,
+      answer2,
+      answer3,
+      result,
+    });
+    res.status(201).json(resp);
   });
 };
 
