@@ -27,11 +27,11 @@ if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 app.use(morgan('dev'));
 
 // rate limiter from the same IP
-const limiter = rateLimit({
-  max: 100,
-  WindowMs: 60 * 60 * 1000,
-  message: 'To many request from this IP, please try again in an hour!',
-});
+// const limiter = rateLimit({
+//   max: 100,
+//   WindowMs: 60 * 60 * 1000,
+//   message: 'To many request from this IP, please try again in an hour!',
+// });
 app.use('/api', limiter);
 // body parser
 app.use(express.json());
