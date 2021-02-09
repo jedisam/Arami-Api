@@ -135,7 +135,7 @@ exports.createStudentAnswer = async (req, res, next) => {
 
 exports.getAllStudentReport = async (req, res, next) => {
   try {
-    const resp = await studentModel.find({}).select('name result');
+    const resp = await studentModel.find({});
     res.status(200).json({ resp });
   } catch (err) {
     console.error(err);
