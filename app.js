@@ -32,7 +32,7 @@ app.use(morgan('dev'));
 //   WindowMs: 60 * 60 * 1000,
 //   message: 'To many request from this IP, please try again in an hour!',
 // });
-app.use('/api', limiter);
+// app.use('/api', limiter);
 // body parser
 app.use(express.json());
 
