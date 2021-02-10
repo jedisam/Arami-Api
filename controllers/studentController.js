@@ -10,7 +10,7 @@ exports.createStudentAnswer = async (req, res, next) => {
   let score;
   let examName = req.body.examName;
   let image = req.body.image;
-  examName = examName.trim();
+  examName = examName.trim().toLowerCase();
   const key = '0b1053d6c8054ffebff7b7b236a96db7';
   const key2 = 'd9aae959be994753be5b457ab9e79d2f';
   const endPoint = 'https://westus2.api.cognitive.microsoft.com/';
