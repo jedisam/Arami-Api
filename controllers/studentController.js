@@ -97,6 +97,7 @@ exports.createStudentAnswer = async (req, res, next) => {
       }
 
       answer3 = questionThree.join(' ');
+
       let allAnswers = { answer1, answer2, answer3 };
       console.log('Exam Name:  ', examName);
       const answers = await answerModel.find({ examName });
