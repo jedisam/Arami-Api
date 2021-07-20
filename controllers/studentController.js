@@ -13,7 +13,7 @@ exports.createStudentAnswer = async (req, res, next) => {
   examName = examName.trim().toLowerCase();
   const key = process.env.key
   const key2 = process.env.key2
-  const endPoint = 'https://westus2.api.cognitive.microsoft.com/';
+  const endPoint = process.env.endPoint;
   let jsonResponse, name;
   let subscriptionKey = key;
   let endpoint = endPoint;
